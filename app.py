@@ -33,11 +33,13 @@ def show_loan_taking():
 
 @app.route('/submit',  methods=['POST'])
 def receive_loan_request():
-    db_handler.write_to_database(request.form, "Escrow")
-    info=request.form
+    print("submit")
+    # info=request.form
+    info = request.args.to_dict()
+    print(request.args.to_dict())
     # Boilerplate init for Algo sandbox
-    algod_token  = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' # Algod API Key
-    algod_addr   = 'http://localhost:4001' # Algod Node Address
+    algod_token = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'  # Algod API Key
+    algod_addr = 'http://localhost:4001'  # Algod Node Address
     algod_header = {
         'User-Agent': 'Minimal-PyTeal-SDK-Demo/0.1',
         'X-API-Key': algod_token
@@ -47,22 +49,27 @@ def receive_loan_request():
         algod_addr,
         algod_header
     )
+    print("algo client maybe ready")
     try:
         algod_client.status()
     except error.AlgodHTTPError:
         quit(f"algod node connection failure. Check the host and API key are correct.")
-
-    appID, contractAddr = contract_utils.create_contract(bank_address=,
-                                                         bank_key=,
-                                                         appl_address=info['inputWallet'],
-                                                         coll_address=None,
-                                                         loan_amount=info['inputSum'],
-                                                         time_loan_close=info['inputDuration'],
-                                                         client=algod_client)
+    print("algo client ready")
+    appID, contractAddr = contract_utils.create_contract(
+        bank_address='VELO7H2K7D72I2TIKZFPVMQH57PUD4R5DXXBA4Y4SMHBZQS42NJHNQS2YI',
+        bank_key='7j2aXRN5L/s4f1EJOxKAdaMBkNG/Zhglbox3l6oHyPOpFu+fSvj/pGpoVkr6sgfv30HyPR3uEHMckw4cwlzTUg==',
+        appl_address=info['inputWallet'],
+        coll_address="",
+        loan_amount=int(info['inputSum']),
+        time_loan_close=int(info['inputDuration']),
+        client=algod_client)
     print(appID)
     print(contractAddr)
+    db_handler.write_to_database(request.form, contractAddr)
 
+    print("Wrote to DB")
     return "Submitted"
+
 
 @app.route('/sendToEscrow', methods=['POST'])
 def give_collateral():

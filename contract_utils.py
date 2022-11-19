@@ -29,7 +29,7 @@ def clearstate_contract():
 def create_contract(bank_address, bank_key, appl_address, coll_address, loan_amount, time_loan_close, client):
 
     # set global variables
-    coll_amount = 0.2 * loan_amount
+    coll_amount = int(0.2 * loan_amount)
 
     startTime = int(time())
     endTime = startTime + time_loan_close*60
@@ -59,11 +59,11 @@ def create_contract(bank_address, bank_key, appl_address, coll_address, loan_amo
     # Obtain the current network suggested parameters.
     sp = client.suggested_params()
     sp.flat_fee = True
-    sp.fee = constants.MIN_TXN_FEE
+    sp.fee = 1000
     # Create an application call transaction without an application ID (aka Create)
     txn = future.transaction.ApplicationCreateTxn(
         bank_address,
-        bank_key,
+        sp,
         future.transaction.OnComplete.NoOpOC,
         approval_prog,
         clearstate_prog,
@@ -73,7 +73,7 @@ def create_contract(bank_address, bank_key, appl_address, coll_address, loan_amo
     )
 
     # launch contract on chain
-    txid = client.send_transaction(txn.sign(sk))
+    txid = client.send_transaction(txn.sign(bank_key))
     future.transaction.wait_for_confirmation(client, txid)
     response = client.pending_transaction_info(txid)
 
