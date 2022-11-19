@@ -12,6 +12,20 @@
 
 <div class="container">
     <div class="row">
+        <div class="row">
+            <form>
+                <div class="mb-3">
+                    <label for="inputWallet" class="form-label">Select Source Wallet</label>
+                    <select id="inputWallet" class="form-select" name="inputWallet" aria-describedby="walletHelp">
+                        {% for account in givers %}
+                            <option>{% print(account['public_key']) %}</option>
+                        {% endfor %}
+                    </select>
+                    <div id="walletHelp" class="form-text">Showing Wallets for {% print(givers[0]['Name']) %}
+                    </div>
+                </div>
+            </form>
+        </div>
         <div class="dropdown">
             <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Region
@@ -55,7 +69,7 @@
             </ul>
             <br>
             <form>
-                <div class="input-group mb-3">
+                <div class="input-group mb-3" id="payment-code-{% print(l['id']) %}">
                     <input type="text" class="form-control" placeholder="Amount"
                            aria-label="Amount" aria-describedby="button-addon2" id="payment-amount-{% print(l['id']) %}">
                     <button class="btn btn-outline-primary" type="button" id="button-addon2"
@@ -63,7 +77,6 @@
                                     '{% print(l['id']) %}')">Give Collateral</button>
                 </div>
             </form>
-            <div id="payment-code-{% print(l['id']) %}"></div>
         </div>
     </div>
     {% endfor %}

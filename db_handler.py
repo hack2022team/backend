@@ -36,3 +36,9 @@ def get_open_loans():
     conn = sqlite3.connect('loans.sqlite')
     open_loans = pd.read_sql_query("SELECT * from loans where status='OPEN'", conn)
     return open_loans.to_dict(orient="records")
+
+
+def get_giver_accounts():
+    conn = sqlite3.connect('loans.sqlite')
+    open_loans = pd.read_sql_query("SELECT * from givers", conn)
+    return open_loans.to_dict(orient="records")
