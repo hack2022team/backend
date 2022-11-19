@@ -3,6 +3,7 @@ import json
 from flask import Flask, request
 from jinja2 import Environment, PackageLoader, select_autoescape
 import db_handler
+import contract_utils
 
 app = Flask(__name__)
 
@@ -29,7 +30,16 @@ def show_loan_taking():
 @app.route('/submit',  methods=['POST'])
 def receive_loan_request():
     db_handler.write_to_database(request.form, "Escrow")
-    # Funktion für Smart Contract erstellung
+    info=request.form
+    appID, contractAddr = contract_utils.create_contract(bank_address=,
+                                   bank_key=,
+                                   appl_address=info['inputWallet'],
+                                   coll_address=None,
+                                   loan_amount=info['inputSum'],
+                                   time_loan_close=info['inputDuration'])
+    print(appID)
+    print(contractAddr)
+
     return "Submitted"
 
 @app.route('/sendToEscrow', methods=['POST'])
