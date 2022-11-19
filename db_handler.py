@@ -43,6 +43,13 @@ def get_giver_accounts():
     open_loans = pd.read_sql_query("SELECT * from givers", conn)
     return open_loans.to_dict(orient="records")
 
+
+def get_receiver_accounts():
+    conn = sqlite3.connect('loans.sqlite')
+    open_loans = pd.read_sql_query("SELECT * from receivers", conn)
+    return open_loans.to_dict(orient="records")
+
+
 def get_giver_key(key):
     conn = sqlite3.connect('loans.sqlite')
     open_loans = pd.read_sql_query("SELECT private_key from givers WHERE public_key='" + key +"'", conn)

@@ -37,6 +37,13 @@ def loan_overview():
     template = env.get_template("loan_overview.html")
     return template.render(loans=loans, givers=givers)
 
+@app.route('/wallet')
+def loan_repayment():
+    loans = db_handler.get_open_loans()
+    receivers = db_handler.get_receiver_accounts()
+    template = env.get_template("wallet.html")
+    return template.render(loans=loans, receivers=receivers)
+
 
 @app.route('/submit',  methods=['GET'])
 def receive_loan_request():
