@@ -145,7 +145,7 @@ def create_contract(bank_address, bank_key, appl_address, coll_address, loan_amo
         future.transaction.OnComplete.NoOpOC,
         approval_prog,
         clearstate_prog,
-        future.transaction.StateSchema(0, 0),
+        future.transaction.StateSchema(7, 6),
         future.transaction.StateSchema(0, 0),
         app_args=app_args
     )
