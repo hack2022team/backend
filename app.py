@@ -77,8 +77,8 @@ def receive_loan_request():
         quit(f"algod node connection failure. Check the host and API key are correct.")
     print("algo client ready")
     appID, contractAddr = contract_utils.create_contract(
-        bank_address='VELO7H2K7D72I2TIKZFPVMQH57PUD4R5DXXBA4Y4SMHBZQS42NJHNQS2YI',
-        bank_key='7j2aXRN5L/s4f1EJOxKAdaMBkNG/Zhglbox3l6oHyPOpFu+fSvj/pGpoVkr6sgfv30HyPR3uEHMckw4cwlzTUg==',
+        bank_address='X7PFNWQNVTXH27MAMTCG6W6PZMSZXZ2EC7DYCHV2MPTVIWNP3CGIF762QE',
+        bank_key='2YOo+co3GUBpILJf7uJ5LHj6pKqwXhXXBkBC8tgEzGi/3lbaDazufX2AZMRvW8/LJZvnRBfHgR66Y+dUWa/YjA==',
         appl_address=info['inputWallet'],
         coll_address="",
         loan_amount=int(info['inputSum'])*1000*1000,

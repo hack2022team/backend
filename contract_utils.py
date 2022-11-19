@@ -1,8 +1,8 @@
-from algosdk import *
-from pyteal import *
-from algosdk.logic import get_application_address
+from time import time
 
-from time import time, sleep
+from algosdk import *
+from algosdk.logic import get_application_address
+from pyteal import *
 
 
 def approval_contract():
@@ -22,40 +22,26 @@ def approval_contract():
     credit_end_time = Bytes("credit_start")
     state = Bytes("state")
 
-    # @Subroutine(TealType.none)
-    # def transact(receiver: Expr, amount: Expr) -> Expr:
-    #     return Seq(
-    #         InnerTxnBuilder.Begin(),
-    #         InnerTxnBuilder.SetFields(
-    #             {
-    #                 TxnField.type_enum: TxnType.Payment,
-    #                 TxnField.amount: amount,
-    #                 TxnField.receiver: receiver,
-    #             }
-    #         ),
-    #         InnerTxnBuilder.Submit(),
-    #     )
-
     on_create = Seq(
-        App.globalPut(credit_giver_key, Bytes("VELO7H2K7D72I2TIKZFPVMQH57PUD4R5DXXBA4Y4SMHBZQS42NJHNQS2YI")),
+        App.globalPut(credit_giver_key,
+                      Txn.application_args[0]),
         App.globalPut(credit_taker_key,
-                      Bytes(b'\x1f\x83\x1d9\xda\x9dZH5Qt\xfb]L\t\x12\xe8{3\xb0\xb2\xaa\xe9^(\x88|{\xea!\xa7\xcb')),
+                      Txn.application_args[1]),
         App.globalPut(security_start_time, Bytes("")),
-        App.globalPut(security_giver_value, Int(0)),
+        App.globalPut(security_giver_key,
+                      Bytes(encoding.decode_address("M2N73UL5AQSM3H4I3RTR3CWHBDMAUQOOFUV7LSINAULXDOWTRZCUOWL4QI"))),
         App.globalPut(escrow_value, Int(0)),
-        App.globalPut(security_giver_goal_sum, Int(100000)),
-        App.globalPut(credit, Int(500000)),
-        App.globalPut(interest_credit, Int(0)),
-        App.globalPut(interest_security, Int(0)),
+        App.globalPut(security_giver_goal_sum, Btoi(Txn.application_args[4])),
+        App.globalPut(credit, Btoi(Txn.application_args[3])),
+        App.globalPut(interest_credit, Int(5)),
+        App.globalPut(interest_security, Int(2)),
         App.globalPut(security_end_time, Bytes("")),
-        App.globalPut(credit_start_time, Bytes("")),
+        App.globalPut(credit_start_time, Bytes("2022-11-19 10:30")),
         App.globalPut(credit_end_time, Bytes("")),
         App.globalPut(state, Int(0)),
         Approve()
     )
-    # The contract can be closed, if the escrow contains (100%+InterestRate)of Credit and (100%+InterestRate)of Security
-    pay_credit_escrow_goal = (App.globalGet(credit) * (App.globalGet(interest_credit) + Int(100)) / Int(100)) + (
-                App.globalGet(security_giver_goal_sum) * (App.globalGet(interest_security) + Int(100)) / Int(100))
+
     on_setup = Seq(
         App.globalPut(escrow_value, Add(App.globalGet(escrow_value), Gtxn[Txn.group_index() - Int(1)].amount())),
         If(App.globalGet(escrow_value) >= App.globalGet(credit)).Then(
@@ -80,21 +66,60 @@ def approval_contract():
                 ),
                 InnerTxnBuilder.Submit(),
                 App.globalPut(escrow_value, Minus(App.globalGet(escrow_value), App.globalGet(credit)))
-            )
+            ),
         ),
+        App.globalPut(security_giver_key, Txn.sender()),
         Approve(),
     )
+    # The contract can be closed, if the escrow contains (100%+InterestRate)of Credit and (100%+InterestRate)of Security
+    payback_giver = (App.globalGet(credit) * (App.globalGet(interest_credit) + Int(100)) / Int(100))
+    payback_security = (
+            App.globalGet(security_giver_goal_sum) * (App.globalGet(interest_security) + Int(100)) / Int(100))
+
     on_pay_credit = Seq(
         # Todo: Stop if too late for credit
         App.globalPut(escrow_value, Add(App.globalGet(escrow_value), Gtxn[Txn.group_index() - Int(1)].amount())),
+        If(App.globalGet(escrow_value) >= Add(Add(payback_giver, payback_security), Int(200000))).Then(
+            # Payback to credit_giver
+            Seq(
+                App.globalPut(state, Int(3)),
+                Seq(
+                    InnerTxnBuilder.Begin(),
+                    InnerTxnBuilder.SetFields(
+                        {
+                            TxnField.type_enum: TxnType.Payment,
+                            TxnField.amount: payback_giver,
+                            TxnField.receiver: App.globalGet(credit_giver_key),
+                        }
+                    ),
+                    InnerTxnBuilder.Submit(),
+                    App.globalPut(escrow_value, Minus(App.globalGet(escrow_value), payback_giver)),
+                ),
+
+                # Payback to security_giver
+                Seq(
+                    InnerTxnBuilder.Begin(),
+                    InnerTxnBuilder.SetFields(
+                        {
+                            TxnField.type_enum: TxnType.Payment,
+                            TxnField.amount: payback_security,
+                            TxnField.receiver: App.globalGet(security_giver_key),
+                        }
+                    ),
+                    InnerTxnBuilder.Submit(),
+                    App.globalPut(escrow_value, Int(0))
+                ),
+            ),  # close account
+        ),
         Approve()
     )
-    pay_credit_goal = Add(App.globalGet(security_giver_goal_sum), App.globalGet(credit))
+    on_overpay = Reject()
     program = Cond(
         [Txn.application_id() == Int(0), on_create],
         [App.globalGet(state) < Int(1), on_setup],
         [App.globalGet(state) < Int(2), on_security],
-        [App.globalGet(state) < Int(3), on_pay_credit]
+        [App.globalGet(state) < Int(3), on_pay_credit],
+        [App.globalGet(state) < Int(3), on_overpay]
     )
     return program
 
@@ -105,12 +130,11 @@ def clearstate_contract():
 
 
 def create_contract(bank_address, bank_key, appl_address, coll_address, loan_amount, time_loan_close, client):
-
     # set global variables
     coll_amount = int(0.2 * loan_amount)
 
     startTime = int(time())
-    endTime = startTime + time_loan_close*60
+    endTime = startTime + time_loan_close * 60
     endTimeColl = startTime + 10000
 
     app_args = [
@@ -186,7 +210,6 @@ def create_contract(bank_address, bank_key, appl_address, coll_address, loan_amo
 
 
 def pay2contract(origin, target, amount, origin_key, client, appID):
-
     sp = client.suggested_params()
     sp.flat_fee = True
     sp.fee = constants.MIN_TXN_FEE
@@ -202,7 +225,10 @@ def pay2contract(origin, target, amount, origin_key, client, appID):
         sender=origin,
         index=appID,
         on_complete=future.transaction.OnComplete.NoOpOC,
-        sp=sp
+        sp=sp,
+        accounts=['X7PFNWQNVTXH27MAMTCG6W6PZMSZXZ2EC7DYCHV2MPTVIWNP3CGIF762QE',
+                  'M2N73UL5AQSM3H4I3RTR3CWHBDMAUQOOFUV7LSINAULXDOWTRZCUOWL4QI',
+                  'ZH2ULK35LAX2BA2BBICP5NFSVPUOHNYI6XPTMTJMJKIV7TUGMWXV6WF6E4']
     )
 
     transaction.assign_group_id([payTxn, appCallTxn])
@@ -213,4 +239,3 @@ def pay2contract(origin, target, amount, origin_key, client, appID):
     client.send_transactions([signedPayTxn, signedAppCallTxn])
 
     future.transaction.wait_for_confirmation(client, appCallTxn.get_txid())
-
