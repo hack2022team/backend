@@ -1,6 +1,6 @@
 import json
 
-from flask import Flask, request
+from flask import Flask, request, redirect
 from jinja2 import Environment, PackageLoader, select_autoescape
 import db_handler
 import contract_utils
