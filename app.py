@@ -30,6 +30,13 @@ def show_loan_taking():
     template = env.get_template("receive_collateral.html")
     return template.render()
 
+@app.route('/status')
+def loan_overview():
+    loans = db_handler.get_open_loans()
+    givers = db_handler.get_giver_accounts()
+    template = env.get_template("loan_overview.html")
+    return template.render(loans=loans, givers=givers)
+
 
 @app.route('/submit',  methods=['GET'])
 def receive_loan_request():
@@ -66,7 +73,6 @@ def receive_loan_request():
     print(appID)
     print(contractAddr)
     db_handler.write_to_database(info, contractAddr, appID)
-
     print("Wrote to DB")
     return "Submitted"
 
