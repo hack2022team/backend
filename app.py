@@ -132,7 +132,7 @@ def repayLoan():
 
     res = request.args.to_dict()
     contract_utils.pay2contract(res['sourceId'], res['destinationId'], res['amount'],
-                                db_handler.get_recever_key(res['sourceId']),
+                                db_handler.get_receiver_key(res['sourceId']),
                                 algod_client,
                                 db_handler.get_appid(res['destinationId']) )
     # Hier funktion eingeben um an Escrow zu überweisen
