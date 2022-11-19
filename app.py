@@ -158,6 +158,10 @@ def get_contract_info(destinationId):
     appID = db_handler.get_appid(destinationId)
     info = algod_client.application_info(appID)
 
+    states = ['loan unfunded',
+              'collateral outstanding',
+              'loan outstanding',
+              'loan repayed']
 
     info_dict = {}
     for row in info['params']['global-state']:
@@ -167,7 +171,10 @@ def get_contract_info(destinationId):
             value = row['value']['uint']
         elif row['value']['type'] == 1:
             value = row['value']['bytes']
-        info_dict[key] = value
+        if key == 'state':
+            info_dict[key] = states[value]
+        else:
+            info_dict[key] = value
 
     return info_dict
 
