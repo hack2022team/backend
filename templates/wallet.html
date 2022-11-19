@@ -8,6 +8,20 @@
 <body>
 {% include 'components/navbar.html' %}
 
+<div class="row">
+            <form>
+                <div class="mb-3">
+                    <label for="inputWallet" class="form-label">Select Source Wallet</label>
+                    <select id="inputWallet" class="form-select" name="inputWallet" aria-describedby="walletHelp">
+                        {% for account in givers %}
+                            <option>{% print(account['public_key']) %}</option>
+                        {% endfor %}
+                    </select>
+                    <div id="walletHelp" class="form-text">Showing Wallets for {% print(givers[0]['Name']) %}
+                    </div>
+                </div>
+            </form>
+        </div>
 
 {% include 'components/footer.html' %}
 </body>
