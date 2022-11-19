@@ -31,7 +31,7 @@ def show_loan_taking():
     return template.render()
 
 
-@app.route('/submit',  methods=['POST'])
+@app.route('/submit',  methods=['GET'])
 def receive_loan_request():
     print("submit")
     # info=request.form
@@ -65,7 +65,7 @@ def receive_loan_request():
         client=algod_client)
     print(appID)
     print(contractAddr)
-    db_handler.write_to_database(request.form, contractAddr, appID)
+    db_handler.write_to_database(info, contractAddr, appID)
 
     print("Wrote to DB")
     return "Submitted"
