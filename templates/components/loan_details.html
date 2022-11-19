@@ -12,10 +12,10 @@
             class="fa-solid fa-hand-holding-dollar"></i></a></li>
     <li class="list-group-item">Status: <span
             class="badge bg-success">{% print(c_data[l['escrow_wallet']]['state']) %}</span></li>
-    <li class="list-group-item">Escrow Balance: {% print(c_data[l['escrow_wallet']]['escrow_value']/1000/1000) %}
+    <li class="list-group-item">Escrow Balance: {% print((c_data[l['escrow_wallet']]['escrow_value'] - c_data[l['escrow_wallet']]['security_giver_goal_sum'])/1000/1000) %}
         <small><span class="badge bg-primary">ALGO</span></small></li>
     <li class="list-group-item">Sum
-        outstanding: {% print((c_data[l['escrow_wallet']]['escrow_value'] - c_data[l['escrow_wallet']]['security_giver_goal_sum'] - c_data[l['escrow_wallet']]['credit'])/1000/1000) %}
+        outstanding: {% print((c_data[l['escrow_wallet']]['credit']-(c_data[l['escrow_wallet']]['escrow_value'] - c_data[l['escrow_wallet']]['security_giver_goal_sum']))/1000/1000) %}
         <small><span class="badge bg-primary">ALGO</span></small></li>
     <li class="list-group-item">Loan Date: {% print(c_data[l['escrow_wallet']]['credit_start']) %} </li>
     <li class="list-group-item"><a data-bs-toggle="tooltip"
