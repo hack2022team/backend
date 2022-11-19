@@ -115,6 +115,32 @@ def give_collateral():
     return "Collateral provided"
 
 
+@app.route('/repayToEscrow', methods=['GET'])
+def repayLoan():
+    # Boilerplate init for Algo sandbox
+    algod_token = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'  # Algod API Key
+    algod_addr = 'http://localhost:4001'  # Algod Node Address
+    algod_header = {
+        'User-Agent': 'Minimal-PyTeal-SDK-Demo/0.1',
+        'X-API-Key': algod_token
+    }
+    algod_client = v2client.algod.AlgodClient(
+        algod_token,
+        algod_addr,
+        algod_header
+    )
+
+    res = request.args.to_dict()
+    contract_utils.pay2contract(res['sourceId'], res['destinationId'], res['amount'],
+                                db_handler.get_recever_key(res['sourceId']),
+                                algod_client,
+                                db_handler.get_appid(res['destinationId']) )
+    # Hier funktion eingeben um an Escrow zu überweisen
+    return "Repayment complete"
+
+
+
+
 def get_contract_info(destinationId):
     # Boilerplate init for Algo sandbox
     algod_token = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'  # Algod API Key

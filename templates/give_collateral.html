@@ -73,7 +73,7 @@
                     <input type="text" class="form-control" placeholder="Amount"
                            aria-label="Amount" aria-describedby="button-addon2" id="payment-amount-{% print(l['id']) %}">
                     <button class="btn btn-outline-primary" type="button" id="button-addon2"
-                            onclick="showPaymentCode('{% print(l['escrow_wallet']) %}',
+                            onclick="showPaymentCodeCollateral('{% print(l['escrow_wallet']) %}',
                                     '{% print(l['id']) %}')">Give Collateral</button>
                 </div>
             </form>

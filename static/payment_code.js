@@ -17,10 +17,20 @@ async function postData(url = '', data = {}) {
 }
 
 
-function showPaymentCode(walletId, id) {
+function showPaymentCodeCollateral(walletId, id) {
     amount=document.getElementById("payment-amount-"+id).value*1000*1000;
     sourceId = document.getElementById("inputWallet").value;
     postData('sendToEscrow?destinationId=' + walletId + '&sourceId=' + sourceId + '&amount=' + amount)
+      .then((response) => response.text()).then((data) => {
+        document.getElementById("payment-code-"+id).innerHTML = data; // JSON data parsed by `data.json()` call
+      });
+}
+
+
+function showPaymentCodeRepayment(walletId, id) {
+    amount=document.getElementById("payment-amount-"+id).value*1000*1000;
+    sourceId = document.getElementById("inputWallet").value;
+    postData('repayToEscrow?destinationId=' + walletId + '&sourceId=' + sourceId + '&amount=' + amount)
       .then((response) => response.text()).then((data) => {
         document.getElementById("payment-code-"+id).innerHTML = data; // JSON data parsed by `data.json()` call
       });
