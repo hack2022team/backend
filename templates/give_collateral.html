@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    {% include 'components/head.html' %}
+    <title>Provide Kollateral</title>
+</head>
+
+<body>
+{% include 'components/navbar.html' %}
+
+
+<div class="container">
+    <div class="row">
+        <div class="dropdown">
+            <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Region
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Europe</a></li>
+                <li><a class="dropdown-item" href="#">South America</a></li>
+                <li><a class="dropdown-item" href="#">Asia</a></li>
+                <li><a class="dropdown-item" href="#">North America</a></li>
+                <li><a class="dropdown-item" href="#">Australia</a></li>
+                <li><a class="dropdown-item" href="#">Africa</a></li>
+            </ul>
+        </div>
+
+        <div class="dropdown">
+            <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Type
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Business</a></li>
+                <li><a class="dropdown-item" href="#">House</a></li>
+            </ul>
+        </div>
+    </div>
+    {% for l in loans %}
+    <div class="card" style="width: 20rem;">
+        <img src="static/dimitri.jpg" class="card-img-top" alt="...">
+        <div class="card-body">
+            <h5 class="card-title">{% print(l['name']) %}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">{% print(l['location']) %}</h6>
+            <p class="card-text">{% print(l['story']) %}. <a href="#">Read
+                    More</a></p>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Loan: {% print(l['sum']) %} <small><span class="badge bg-primary">ALGO</span></small></li>
+                <li class="list-group-item"><a data-bs-toggle="tooltip" data-bs-title="We calculate 20% collateral for the loan.">Collateral needed:</a> {% print("{:.2f}".format(l['sum']*0.2)) %} <small><span class="badge bg-primary">ALGO</span></small>
+                </li>
+                <li class="list-group-item">Loan Duration: {% print( "{:.2f}".format(l['loan_duration']/86400)) %} Days</li>
+                <li class="list-group-item">Payout: {% print(l['max_fees']) %}% <a data-bs-toggle="tooltip" data-bs-title="This is equivalent to {% print("{:.2f}".format(l['sum']*0.2*0.01)) %} ALGO"><i
+                        class="fa-solid fa-hand-holding-dollar"></i></a></li>
+                <li class="list-group-item"><a data-bs-toggle="tooltip" data-bs-title="The submitter conducts a self assessment for the risk associated with the loan.">Risk level:</a> <span class="badge bg-warning">{% print(l['risk']) %}</span></li>
+            </ul>
+            <br>
+            <form>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Amount"
+                           aria-label="Amount" aria-describedby="button-addon2" id="payment-amount-{% print(l['id']) %}">
+                    <button class="btn btn-outline-primary" type="button" id="button-addon2"
+                            onclick="showPaymentCode('{% print(l['escrow_wallet']) %}',
+                                    '{% print(l['id']) %}')">Give Collateral</button>
+                </div>
+            </form>
+            <div id="payment-code-{% print(l['id']) %}"></div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+
+{% include 'components/footer.html' %}
+
+</body>
+
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% include 'components/head.html' %}
+    <title>Receive Kollateral</title>
+</head>
+<body>
+{% include 'components/navbar.html' %}
+<div class="container">
+    <form action="/submit" method="post">
+        <div class="mb-3">
+            <label for="inputName" class="form-label">Legal Name</label>
+            <input type="text" class="form-control" id="inputName" placeholder="John Doe" name="inputName">
+        </div>
+        <div class="mb-3">
+            <label for="inputSum" class="form-label">Sum Required</label>
+            <input type="text" class="form-control" id="inputSum" placeholder="50000 ALGO" name="inputSum">
+        </div>
+        <div class="mb-3">
+            <label for="selectMaxFee" class="form-label">Loan Duration</label>
+            <select id="selectMaxFee" class="form-select" name="inputDuration">
+                <option value="2630000">1 Month</option>
+                <option value="60">1 Minute</option>
+                <option value="15780000">6 Months</option>
+                <option value="31560000">12 Months</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="selectMaxFee" class="form-label">Maximum Fee</label>
+            <select id="selectMaxFee" class="form-select" name="inputMaxFees">
+                <option value="1">1%</option>
+                <option value="2">2%</option>
+                <option value="5">5%</option>
+                <option value="10">10%</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="inputEmail" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp"
+                   placeholder="john.doe@example.com" name="inputEmail">
+            <div id="emailHelp" class="form-text">We'll never share your email with anyone else. Used for notifications
+                on loan status and repayment terms.
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="inputWallet" class="form-label">Wallet</label>
+            <input type="text" class="form-control" id="inputWallet" placeholder="Algorand Wallet ID" name="inputWallet">
+        </div>
+        <div class="mb-3">
+            <label for="inputStory" class="form-label">My Story</label>
+            <textarea class="form-control" id="inputStory" placeholder="I need a loan for..." name="inputStory"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="inputLocation" class="form-label">Location</label>
+            <input type="text" class="form-control" id="inputLocation" placeholder="Munich, Germany" name="inputLocation">
+        </div>
+        <div class="mb-3">
+            <label for="formFile" class="form-label">Upload a photo</label>
+            <input class="form-control" type="file" id="formFile" name="inputPhoto">
+        </div>
+        <div class="mb-3">
+            <label for="selectMaxFee" class="form-label">Risk assessment</label>
+            <select id="selectMaxFee" class="form-select" name="inputRisk">
+                <option>LOW</option>
+                <option>MEDIUM</option>
+                <option>HIGH</option>
+            </select>
+        </div>
+
+        <input type="submit" class="btn btn-primary" value="Submit Application">
+    </form>
+</div>
+{% include 'components/footer.html' %}
+</body>
+</html>
