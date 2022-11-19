@@ -81,7 +81,7 @@ def receive_loan_request():
         bank_key='7j2aXRN5L/s4f1EJOxKAdaMBkNG/Zhglbox3l6oHyPOpFu+fSvj/pGpoVkr6sgfv30HyPR3uEHMckw4cwlzTUg==',
         appl_address=info['inputWallet'],
         coll_address="",
-        loan_amount=int(info['inputSum']),
+        loan_amount=int(info['inputSum'])*1000*1000,
         time_loan_close=int(info['inputDuration']),
         client=algod_client)
     print(appID)
