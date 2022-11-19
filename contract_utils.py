@@ -194,7 +194,7 @@ def pay2contract(origin, target, amount, origin_key, client, appID):
     payTxn = future.transaction.PaymentTxn(
         sender=origin,
         receiver=target,
-        amt=amount,
+        amt=int(amount),
         sp=sp
     )
 
