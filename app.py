@@ -146,7 +146,7 @@ def get_contract_info(destinationId):
         elif row['value']['type'] == 1:
             value = row['value']['bytes']
         if key == 'state':
-            info_dict[key] = states[str(value)]
+            info_dict[key] = states[value]
         else:
             info_dict[key] = value
 
