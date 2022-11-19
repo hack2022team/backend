@@ -45,10 +45,10 @@ def get_giver_accounts():
 
 def get_giver_key(key):
     conn = sqlite3.connect('loans.sqlite')
-    open_loans = pd.read_sql_query("SELECT private_key from givers WHERE public_key=" + key, conn)
+    open_loans = pd.read_sql_query("SELECT private_key from givers WHERE public_key='" + key +"'", conn)
     return open_loans.to_dict(orient="records")[0]['private_key']
 
 def get_appid(key):
     conn = sqlite3.connect('loans.sqlite')
-    open_loans = pd.read_sql_query("SELECT appid from loans WHERE escrow_wallet=" + key, conn)
+    open_loans = pd.read_sql_query("SELECT appid from loans WHERE escrow_wallet='" + key+"'", conn)
     return open_loans.to_dict(orient="records")[0]['appid']
