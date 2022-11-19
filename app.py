@@ -71,7 +71,7 @@ def receive_loan_request():
     return "Submitted"
 
 
-@app.route('/sendToEscrow', methods=['POST'])
+@app.route('/sendToEscrow', methods=['GET'])
 def give_collateral():
     # Boilerplate init for Algo sandbox
     algod_token = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'  # Algod API Key
@@ -86,7 +86,7 @@ def give_collateral():
         algod_header
     )
 
-    res = request.get_json()
+    res = request.args.to_dict()
     contract_utils.pay2contract(res['sourceId'], res['destinationId'], res['amount'],
                                 db_handler.get_giver_key(res['sourceId']),
                                 algod_client,

@@ -2,7 +2,7 @@
 async function postData(url = '', data = {}) {
   // Default options are marked with *
   const response = await fetch(url, {
-    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+    method: 'GET', // *GET, POST, PUT, DELETE, etc.
     mode: 'cors', // no-cors, *cors, same-origin
     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
     credentials: 'same-origin', // include, *same-origin, omit
@@ -21,7 +21,7 @@ async function postData(url = '', data = {}) {
 function showPaymentCode(walletId, id) {
     amount=document.getElementById("payment-amount-"+id).value*1000*1000;
     sourceId = document.getElementById("inputWallet").value;
-    postData('/sendToEscrow', { destinationId: walletId, sourceId: sourceId, amount: amount})
+    postData('/sendToEscrow?destinationId=' + walletId + '&sourceId=' + sourceId + '&amount=' + amount)
       .then((response) => response.text()).then((data) => {
         document.getElementById("payment-code-"+id).innerHTML = data; // JSON data parsed by `data.json()` call
       });
