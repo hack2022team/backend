@@ -8,6 +8,7 @@ import contract_utils
 from algosdk import *
 from pyteal import *
 from algosdk.logic import get_application_address
+from base64 import b64decode
 
 app = Flask(__name__)
 
@@ -106,6 +107,39 @@ def give_collateral():
                                 db_handler.get_appid(res['destinationId']) )
     # Hier funktion eingeben um an Escrow zu überweisen
     return "Collateral provided"
+
+@app.route('/getContractInfo', methods=['GET'])
+def get_contract_info():
+    # Boilerplate init for Algo sandbox
+    algod_token = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'  # Algod API Key
+    algod_addr = 'http://localhost:4001'  # Algod Node Address
+    algod_header = {
+        'User-Agent': 'Minimal-PyTeal-SDK-Demo/0.1',
+        'X-API-Key': algod_token
+    }
+    algod_client = v2client.algod.AlgodClient(
+        algod_token,
+        algod_addr,
+        algod_header
+    )
+
+    res = request.args.to_dict()
+    appID = db_handler.get_appid(res['destinationId'])
+    info = algod_client.application_info(appID)
+
+
+    info_dict = {}
+    for row in info['params']['global-state']:
+        row['key'] = b64decode(row['key'])
+        key = row['key'].decode()
+        if row['value']['type'] == 2:
+            value = row['value']['uint']
+        elif row['value']['type'] == 1:
+            value = row['value']['bytes']
+        info_dict[key] = value
+
+    return info_dict
+
 
 if __name__ == '__main__':
     app.run()
