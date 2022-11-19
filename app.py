@@ -31,12 +31,30 @@ def show_loan_taking():
 def receive_loan_request():
     db_handler.write_to_database(request.form, "Escrow")
     info=request.form
+    # Boilerplate init for Algo sandbox
+    algod_token  = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' # Algod API Key
+    algod_addr   = 'http://localhost:4001' # Algod Node Address
+    algod_header = {
+        'User-Agent': 'Minimal-PyTeal-SDK-Demo/0.1',
+        'X-API-Key': algod_token
+    }
+    algod_client = v2client.algod.AlgodClient(
+        algod_token,
+        algod_addr,
+        algod_header
+    )
+    try:
+        algod_client.status()
+    except error.AlgodHTTPError:
+        quit(f"algod node connection failure. Check the host and API key are correct.")
+
     appID, contractAddr = contract_utils.create_contract(bank_address=,
-                                   bank_key=,
-                                   appl_address=info['inputWallet'],
-                                   coll_address=None,
-                                   loan_amount=info['inputSum'],
-                                   time_loan_close=info['inputDuration'])
+                                                         bank_key=,
+                                                         appl_address=info['inputWallet'],
+                                                         coll_address=None,
+                                                         loan_amount=info['inputSum'],
+                                                         time_loan_close=info['inputDuration'],
+                                                         client=algod_client)
     print(appID)
     print(contractAddr)
 
