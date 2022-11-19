@@ -35,7 +35,7 @@ def show_loan_taking():
 def loan_overview():
     loans = db_handler.get_open_loans()
     givers = db_handler.get_giver_accounts()
-    c_data = []
+    c_data = {}
     for l in loans:
         c_data[l['escrow_wallet']] = get_contract_info(l['escrow_wallet'])
     template = env.get_template("loan_overview.html")
@@ -45,7 +45,7 @@ def loan_overview():
 def loan_repayment():
     loans = db_handler.get_open_loans()
     receivers = db_handler.get_receiver_accounts()
-    c_data = []
+    c_data = {}
     for l in loans:
         c_data[l['escrow_wallet']] = get_contract_info(l['escrow_wallet'])
     template = env.get_template("wallet.html")
