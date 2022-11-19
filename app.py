@@ -35,15 +35,21 @@ def show_loan_taking():
 def loan_overview():
     loans = db_handler.get_open_loans()
     givers = db_handler.get_giver_accounts()
+    c_data = []
+    for l in loans:
+        c_data[l['escrow_wallet']] = get_contract_info(l['escrow_wallet'])
     template = env.get_template("loan_overview.html")
-    return template.render(loans=loans, givers=givers)
+    return template.render(loans=loans, givers=givers, c_data=c_data)
 
 @app.route('/wallet')
 def loan_repayment():
     loans = db_handler.get_open_loans()
     receivers = db_handler.get_receiver_accounts()
+    c_data = []
+    for l in loans:
+        c_data[l['escrow_wallet']] = get_contract_info(l['escrow_wallet'])
     template = env.get_template("wallet.html")
-    return template.render(loans=loans, receivers=receivers)
+    return template.render(loans=loans, receivers=receivers, c_data=c_data)
 
 
 @app.route('/submit',  methods=['GET'])
@@ -108,8 +114,8 @@ def give_collateral():
     # Hier funktion eingeben um an Escrow zu überweisen
     return "Collateral provided"
 
-@app.route('/getContractInfo', methods=['GET'])
-def get_contract_info():
+
+def get_contract_info(destinationId):
     # Boilerplate init for Algo sandbox
     algod_token = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'  # Algod API Key
     algod_addr = 'http://localhost:4001'  # Algod Node Address
@@ -123,8 +129,7 @@ def get_contract_info():
         algod_header
     )
 
-    res = request.args.to_dict()
-    appID = db_handler.get_appid(res['destinationId'])
+    appID = db_handler.get_appid(destinationId)
     info = algod_client.application_info(appID)
 
 
