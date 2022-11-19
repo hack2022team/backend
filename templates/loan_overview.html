@@ -12,21 +12,7 @@
         {% for l in loans %}
             <div class="card" style="width: 30rem;margin: 5px">
                 <div class="card-body">
-                    <h5 class="card-title">{% print(l['name']) %}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">{% print(l['escrow_wallet']) %}</h6>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">Loan: {% print(l['sum']) %} <small><span class="badge bg-primary">ALGO</span></small></li>
-                        <li class="list-group-item"><a data-bs-toggle="tooltip" data-bs-title="We calculate 20% collateral for the loan.">Collateral needed:</a> {% print("{:.2f}".format(l['sum']*0.2)) %} <small><span class="badge bg-primary">ALGO</span></small>
-                        </li>
-                        <li class="list-group-item">Loan Duration: {% print( "{:.2f}".format(l['loan_duration']/86400)) %} Days</li>
-                        <li class="list-group-item">Payout: {% print(l['max_fees']) %}% <a data-bs-toggle="tooltip" data-bs-title="This is equivalent to {% print("{:.2f}".format(l['sum']*0.2*0.01)) %} ALGO"><i
-                                class="fa-solid fa-hand-holding-dollar"></i></a></li>
-                        <li class="list-group-item">Status: <span class="badge bg-success">{% print(c_data[l['escrow_wallet']]['state']) %}</span></li>
-                        <li class="list-group-item">Escrow Balance: {% print(c_data[l['escrow_wallet']]['escrow_value']/1000/1000) %} <small><span class="badge bg-primary">ALGO</span></small></li>
-                        <li class="list-group-item">Sum outstanding: {% print((c_data[l['escrow_wallet']]['credit'] - c_data[l['escrow_wallet']]['escrow_value'] - c_data[l['escrow_wallet']]['security_giver_goal_sum'])/1000/1000)  %} <small><span class="badge bg-primary">ALGO</span></small></li>
-                        <li class="list-group-item">Loan Date: {% print(c_data[l['escrow_wallet']]['credit_start']) %} </li>
-                        <li class="list-group-item"><a data-bs-toggle="tooltip" data-bs-title="The submitter conducts a self assessment for the risk associated with the loan.">Risk level:</a> <span class="badge bg-warning">{% print(l['risk']) %}</span></li>
-                    </ul>
+                    {% include('components/loan_details.html') %}
                 </div>
             </div>
         {% endfor %}
