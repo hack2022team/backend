@@ -107,7 +107,7 @@ def create_contract(bank_address, bank_key, appl_address, coll_address, loan_amo
     return appID, appAddr
 
 
-def pay2contract(origin, target, amount, origin_key, client):
+def pay2contract(origin, target, amount, origin_key, client, appID):
 
     sp = client.suggested_params()
     sp.flat_fee = True

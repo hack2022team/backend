@@ -65,7 +65,7 @@ def receive_loan_request():
         client=algod_client)
     print(appID)
     print(contractAddr)
-    db_handler.write_to_database(request.form, contractAddr)
+    db_handler.write_to_database(request.form, contractAddr, appID)
 
     print("Wrote to DB")
     return "Submitted"
@@ -73,7 +73,24 @@ def receive_loan_request():
 
 @app.route('/sendToEscrow', methods=['POST'])
 def give_collateral():
-    print(request.get_json())
+    # Boilerplate init for Algo sandbox
+    algod_token = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'  # Algod API Key
+    algod_addr = 'http://localhost:4001'  # Algod Node Address
+    algod_header = {
+        'User-Agent': 'Minimal-PyTeal-SDK-Demo/0.1',
+        'X-API-Key': algod_token
+    }
+    algod_client = v2client.algod.AlgodClient(
+        algod_token,
+        algod_addr,
+        algod_header
+    )
+
+    res = request.get_json()
+    contract_utils.pay2contract(res['sourceId'], res['destinationId'], res['amount'],
+                                db_handler.get_giver_key(res['sourceId']),
+                                algod_client,
+                                db_handler.get_appid(res['destinationId']) )
     # Hier funktion eingeben um an Escrow zu überweisen
     return "Collateral provided"
 
