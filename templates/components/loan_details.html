@@ -24,7 +24,7 @@
     {% endif %}
     {% if c_data[l['escrow_wallet']]['state'] == "Loan outstanding" %}
      <li class="list-group-item">Sum
-        outstanding: {% print((c_data[l['escrow_wallet']]['credit']-(c_data[l['escrow_wallet']]['escrow_value'] - c_data[l['escrow_wallet']]['security_giver_goal_sum']))/1000/1000*1.1) %}
+        outstanding: {% print("{:.2f}".format((c_data[l['escrow_wallet']]['credit']-(c_data[l['escrow_wallet']]['escrow_value'] - c_data[l['escrow_wallet']]['security_giver_goal_sum']))/1000/1000*1.1)) %}
         <small><span class="badge bg-primary">ALGO</span></small></li>
     {% endif %}
     {% if c_data[l['escrow_wallet']]['state'] != "Loan outstanding" %}
