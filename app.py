@@ -17,6 +17,10 @@ env = Environment(
     autoescape=select_autoescape()
 )
 
+@app.route('/')
+def redirect_to_give():
+    return redirect("give", 302)
+
 
 @app.route('/give')
 def show_loan_giving():
@@ -88,7 +92,7 @@ def receive_loan_request():
     print(contractAddr)
     db_handler.write_to_database(info, contractAddr, appID)
     print("Wrote to DB")
-    return "Submitted"
+    return redirect("give", 302)
 
 
 @app.route('/sendToEscrow', methods=['GET'])
@@ -158,10 +162,10 @@ def get_contract_info(destinationId):
     appID = db_handler.get_appid(destinationId)
     info = algod_client.application_info(appID)
 
-    states = ['loan unfunded',
-              'collateral outstanding',
-              'loan outstanding',
-              'loan repayed']
+    states = ['Loan unfunded',
+              'Collateral outstanding',
+              'Loan outstanding',
+              'Loan repayed']
 
     info_dict = {}
     for row in info['params']['global-state']:
