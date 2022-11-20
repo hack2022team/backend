@@ -29,7 +29,7 @@ def approval_contract():
                       Txn.application_args[1]),
         App.globalPut(security_start_time, Bytes("")),
         App.globalPut(security_giver_key,
-                      Bytes(encoding.decode_address("M2N73UL5AQSM3H4I3RTR3CWHBDMAUQOOFUV7LSINAULXDOWTRZCUOWL4QI"))),
+                      Bytes(encoding.decode_address("BQQN46EBQ5NC3QS6DXPMHWMX7JP5F4OOAEEFEFW6AC7GQ6XHA57OTBXOJE"))),
         App.globalPut(escrow_value, Int(0)),
         App.globalPut(security_giver_goal_sum, Btoi(Txn.application_args[4])),
         App.globalPut(credit, Btoi(Txn.application_args[3])),
@@ -226,9 +226,9 @@ def pay2contract(origin, target, amount, origin_key, client, appID):
         index=appID,
         on_complete=future.transaction.OnComplete.NoOpOC,
         sp=sp,
-        accounts=['X7PFNWQNVTXH27MAMTCG6W6PZMSZXZ2EC7DYCHV2MPTVIWNP3CGIF762QE',
-                  'M2N73UL5AQSM3H4I3RTR3CWHBDMAUQOOFUV7LSINAULXDOWTRZCUOWL4QI',
-                  'ZH2ULK35LAX2BA2BBICP5NFSVPUOHNYI6XPTMTJMJKIV7TUGMWXV6WF6E4']
+        accounts=['BQQN46EBQ5NC3QS6DXPMHWMX7JP5F4OOAEEFEFW6AC7GQ6XHA57OTBXOJE',
+                  'HAHEQZSEEBLU6UAIYWWZQ7MP3YTOHMEKXT3MQ7ZZBQDMCPLRC7RHYN4GDA',
+                  'MHH6XSVSR7JB3FD4BGIL2IGEXIXBFQFUGYWFALVDL6W53CXS3QRNGEZ3BI']
     )
 
     transaction.assign_group_id([payTxn, appCallTxn])
